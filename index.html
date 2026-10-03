@@ -1,0 +1,2030 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portfólio | Arthur Providelo</title>
+  <meta name="description"
+    content="Desenvolvedor Flutter e Laravel, estudante de ADS no SENAI. Conheça o MobiPet, meu sistema de petshop com app, API e leitor RFID." />
+  <meta property="og:title" content="Portfólio | Arthur Providelo" />
+  <meta property="og:description" content="Conheça o MobiPet: app, API e leitor RFID conversando entre si." />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#0A111C" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Hanken+Grotesk:wght@400..700&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet" />
+
+  <style>
+    :root {
+      /* paleta oficial do MobiPet (app_colors.dart) sobre um fundo azul-marinho */
+      --bg: #0A111C;
+      --bg-2: #0F1826;
+      --surface: #131D2D;
+      --surface-2: #1A2739;
+      --line: rgba(255, 255, 255, .07);
+      --line-2: rgba(255, 255, 255, .13);
+      --text: #E8EEF6;
+      --muted: #93A3B8;
+      --dim: #64758C;
+      --accent: #58B8E8;
+      /* primaryLight */
+      --primary: #2D5D96;
+      /* primary */
+      --brand: #3E77B5;
+      /* azul dos botões do app */
+      --ok: #22C55E;
+      /* success */
+      --btn-bg: var(--accent);
+      --btn-bg-hover: #7CCBF0;
+      --btn-fg: #06182A;
+      --display: "Bricolage Grotesque", "Hanken Grotesk", system-ui, sans-serif;
+      --font: "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+      --mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      font-family: var(--font);
+      font-size: 1.0625rem;
+      line-height: 1.65;
+      color: var(--text);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: clip;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+      border-radius: 6px;
+    }
+
+    .wrap {
+      width: 100%;
+      max-width: 1160px;
+      margin: 0 auto;
+      padding-inline: clamp(20px, 4vw, 40px);
+    }
+
+    ::selection {
+      background: rgba(88, 184, 232, .3);
+    }
+
+    /* ruído sutil para tirar o "chapado" do fundo */
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 100;
+      opacity: .035;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    /* ================= peças compartilhadas ================= */
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--mono);
+      font-size: .78rem;
+      font-weight: 500;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 20px;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 28px;
+      height: 1px;
+      background: currentColor;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 36px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 22px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: .98rem;
+      cursor: pointer;
+      border: 1px solid var(--line-2);
+      background: transparent;
+      color: var(--text);
+      transition: transform .2s, background .2s, border-color .2s;
+    }
+
+    .btn:hover {
+      border-color: var(--accent);
+    }
+
+    .btn:active {
+      transform: scale(.98);
+    }
+
+    .btn svg {
+      width: 16px;
+      height: 16px;
+      transition: transform .25s;
+    }
+
+    .btn:hover svg {
+      transform: translateX(3px);
+    }
+
+    .btn-primary {
+      border-color: transparent;
+      background: var(--btn-bg);
+      color: var(--btn-fg);
+    }
+
+    .btn-primary:hover {
+      border-color: transparent;
+      background: var(--btn-bg-hover);
+    }
+
+    /* aparelhos escuros (leitor, terminal) mantêm as cores mesmo no painel claro */
+    .device {
+      --text: #E8EEF6;
+      --muted: #93A3B8;
+      --dim: #6B7C93;
+      --line: rgba(255, 255, 255, .07);
+      --line-2: rgba(255, 255, 255, .13);
+      color: var(--text);
+    }
+
+    /* ================= NAV flutuante ================= */
+    .nav {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px;
+      border-radius: 999px;
+      background: rgba(15, 24, 38, .78);
+      border: 1px solid var(--line-2);
+      backdrop-filter: blur(14px) saturate(140%);
+      -webkit-backdrop-filter: blur(14px) saturate(140%);
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, .6);
+    }
+
+    .nav a {
+      position: relative;
+      z-index: 1;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: .9rem;
+      font-weight: 500;
+      color: var(--muted);
+      transition: color .25s;
+    }
+
+    .nav a:hover,
+    .nav a.active {
+      color: var(--text);
+    }
+
+    .nav .pill {
+      position: absolute;
+      z-index: 0;
+      top: 6px;
+      height: calc(100% - 12px);
+      border-radius: 999px;
+      background: var(--surface-2);
+      border: 1px solid var(--line-2);
+      transition: left .35s cubic-bezier(.3, 1.3, .5, 1), width .35s cubic-bezier(.3, 1.3, .5, 1), opacity .2s;
+      opacity: 0;
+    }
+
+    .nav .nav-cta {
+      color: var(--btn-fg);
+      background: var(--accent);
+      font-weight: 600;
+    }
+
+    .nav .nav-cta:hover {
+      color: var(--btn-fg);
+      background: var(--btn-bg-hover);
+    }
+
+    /* ================= HERO ================= */
+    .hero {
+      position: relative;
+      min-height: 100svh;
+      display: grid;
+      align-items: center;
+      padding: 130px 0 100px;
+      overflow: hidden;
+    }
+
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(var(--line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--line) 1px, transparent 1px);
+      background-size: 64px 64px;
+      mask-image: radial-gradient(ellipse 70% 60% at 60% 40%, #000 20%, transparent 75%);
+      -webkit-mask-image: radial-gradient(ellipse 70% 60% at 60% 40%, #000 20%, transparent 75%);
+    }
+
+    .hero-glow {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(700px 500px at 78% 38%, rgba(45, 93, 150, .38), transparent 65%),
+        radial-gradient(600px circle at var(--mx, 30%) var(--my, 30%), rgba(88, 184, 232, .09), transparent 60%);
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: clamp(32px, 5vw, 72px);
+      align-items: center;
+    }
+
+    /* o texto recua conforme a página rola (--hp vai de 0 a 1) */
+    .hero-copy {
+      min-width: 0;
+      opacity: calc(1 - var(--hp, 0) * 1.3);
+      transform: translateY(calc(var(--hp, 0) * -50px));
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 14px 6px 8px;
+      border-radius: 999px;
+      background: var(--surface);
+      border: 1px solid var(--line-2);
+      font-size: .85rem;
+      color: var(--muted);
+    }
+
+    .badge .dot {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: rgba(34, 197, 94, .15);
+    }
+
+    .badge .dot::after {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--ok);
+      box-shadow: 0 0 10px var(--ok);
+      animation: breathe 2.4s ease-in-out infinite;
+    }
+
+    @keyframes breathe {
+      50% {
+        opacity: .45;
+      }
+    }
+
+    .hero h1 {
+      margin-top: 26px;
+      font-family: var(--display);
+      font-size: clamp(2.6rem, 5.6vw, 4.6rem);
+      font-weight: 700;
+      line-height: 1.02;
+      letter-spacing: -.02em;
+    }
+
+    .hero h1 .w {
+      display: inline-block;
+      white-space: pre;
+    }
+
+    .hero h1 .soft {
+      color: var(--accent);
+    }
+
+    .hero .lead {
+      margin-top: 26px;
+      max-width: 56ch;
+      color: var(--muted);
+    }
+
+    .hero .lead b {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* cartão de identificação: a mesma peça que move o MobiPet */
+    .idcard-wrap {
+      perspective: 1100px;
+      justify-self: center;
+      width: min(400px, 100%);
+      animation: float 7s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      50% {
+        transform: translateY(-12px);
+      }
+    }
+
+    .idcard {
+      position: relative;
+      aspect-ratio: 1.586;
+      border-radius: 22px;
+      padding: clamp(18px, 2.4vw, 26px);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      color: #fff;
+      background: linear-gradient(135deg, #6CC4EE, var(--brand) 45%, var(--primary) 75%, #1F426E);
+      box-shadow: 0 50px 80px -30px rgba(0, 0, 0, .8), 0 0 90px -20px rgba(88, 184, 232, .35), 0 1px 0 rgba(255, 255, 255, .4) inset;
+      transform:
+        rotateY(calc(-16deg + var(--tx, 0) * 1deg + var(--hp, 0) * 30deg)) rotateX(calc(9deg + var(--ty, 0) * 1deg - var(--hp, 0) * 20deg)) rotateZ(calc(-3deg - var(--hp, 0) * 6deg)) translateY(calc(var(--hp, 0) * -80px));
+      transition: transform .18s ease-out;
+    }
+
+    /* reflexo que acompanha o mouse */
+    .idcard::after {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      pointer-events: none;
+      background: linear-gradient(115deg, transparent 42%, rgba(255, 255, 255, .22) 50%, transparent 58%);
+      transform: translateX(calc(var(--tx, 0) * 3%));
+      transition: transform .18s ease-out;
+    }
+
+    .idcard-top,
+    .idcard-foot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--mono);
+      font-size: .7rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      opacity: .85;
+    }
+
+    .idcard-top svg {
+      width: 26px;
+      height: 26px;
+    }
+
+    .idcard b {
+      display: block;
+      font-family: var(--display);
+      font-size: clamp(1.5rem, 2.8vw, 2rem);
+      font-weight: 700;
+      letter-spacing: -.03em;
+      line-height: 1.05;
+    }
+
+    .idcard small {
+      display: block;
+      margin-top: 6px;
+      font-size: .9rem;
+      opacity: .85;
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 26px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      opacity: calc(1 - var(--hp, 0) * 4);
+    }
+
+    .scroll-hint i {
+      display: block;
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(var(--accent), transparent);
+      animation: drip 2s ease-in-out infinite;
+      transform-origin: top;
+    }
+
+    @keyframes drip {
+      0% {
+        transform: scaleY(0);
+      }
+
+      50% {
+        transform: scaleY(1);
+      }
+
+      100% {
+        transform: scaleY(1);
+        opacity: 0;
+      }
+    }
+
+    /* ================= SOBRE ================= */
+    .sec {
+      position: relative;
+      padding: clamp(90px, 12vw, 160px) 0;
+    }
+
+    /* frase que acende palavra por palavra com a rolagem */
+    .statement {
+      font-family: var(--display);
+      font-size: clamp(1.9rem, 4.6vw, 3.6rem);
+      font-weight: 600;
+      line-height: 1.12;
+      letter-spacing: -.018em;
+      max-width: 22ch;
+    }
+
+    .statement .lw {
+      opacity: .16;
+    }
+
+    .statement .hl {
+      color: var(--accent);
+    }
+
+    .bento {
+      margin-top: clamp(56px, 8vw, 96px);
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(6, 1fr);
+    }
+
+    .tile {
+      position: relative;
+      overflow: hidden;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 28px;
+    }
+
+    .tile::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .3s;
+      background: radial-gradient(380px circle at var(--x, 50%) var(--y, 50%), rgba(88, 184, 232, .1), transparent 60%);
+    }
+
+    .tile:hover::before {
+      opacity: 1;
+    }
+
+    .tile h3 {
+      font-family: var(--display);
+      font-size: 1.25rem;
+      font-weight: 600;
+      letter-spacing: -.02em;
+      margin-bottom: 10px;
+    }
+
+    .tile p {
+      color: var(--muted);
+    }
+
+    .t-story {
+      grid-column: span 4;
+    }
+
+    .t-story p+p {
+      margin-top: 14px;
+    }
+
+    .t-story p b {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .t-now {
+      grid-column: span 2;
+    }
+
+    .t-now dl {
+      display: grid;
+      gap: 14px;
+      margin-top: 6px;
+    }
+
+    .t-now dt {
+      font-family: var(--mono);
+      font-size: .72rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--dim);
+    }
+
+    .t-now dd {
+      font-weight: 500;
+    }
+
+    /* ferramentas organizadas pela camada do sistema em que atuam */
+    .t-stack {
+      grid-column: span 6;
+    }
+
+    .layers {
+      list-style: none;
+      margin-top: 8px;
+    }
+
+    .layers li {
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      gap: 16px;
+      align-items: center;
+      padding: 16px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .layers li:first-child {
+      border-top: 0;
+    }
+
+    .layers .layer {
+      font-family: var(--mono);
+      font-size: .75rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip {
+      padding: 7px 14px;
+      border-radius: 10px;
+      background: var(--bg-2);
+      border: 1px solid var(--line);
+      font-weight: 500;
+      font-size: .93rem;
+    }
+
+    /* ================= MOBIPET: painel claro, nas cores do app ================= */
+    .panel {
+      --text: #243B53;
+      --muted: #55657A;
+      --dim: #6B7280;
+      --line: #E6EAF2;
+      --line-2: #D3DBE8;
+      --surface: #FFFFFF;
+      --accent: #2D5D96;
+      --btn-bg: #2D5D96;
+      --btn-bg-hover: #3E77B5;
+      --btn-fg: #fff;
+      position: relative;
+      color: var(--text);
+      background: #F7F9FC;
+      border-radius: clamp(24px, 4vw, 52px);
+      padding: clamp(80px, 10vw, 140px) 0;
+    }
+
+    .panel h2 {
+      font-family: var(--display);
+      font-size: clamp(2.4rem, 6vw, 4.6rem);
+      font-weight: 700;
+      letter-spacing: -.025em;
+      line-height: 1;
+    }
+
+    .panel h2 em {
+      font-style: normal;
+      color: var(--accent);
+    }
+
+    .panel-head .lead {
+      margin-top: 22px;
+      max-width: 52ch;
+      font-size: 1.15rem;
+      color: var(--muted);
+    }
+
+    /* o caminho de um toque: texto rola, o palco fica fixo */
+    .path {
+      margin-top: clamp(48px, 7vw, 90px);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(32px, 6vw, 90px);
+    }
+
+    .path-steps {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    .path-stage {
+      grid-column: 2;
+      grid-row: 1;
+      align-self: start;
+      position: sticky;
+      top: max(90px, calc(50vh - 290px));
+      height: 580px;
+      display: flex;
+      flex-direction: column;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      box-shadow: 0 30px 60px -40px rgba(45, 93, 150, .45);
+      padding: 26px;
+    }
+
+    .step {
+      min-height: 78vh;
+      display: flex;
+      align-items: center;
+      opacity: .38;
+      transition: opacity .4s;
+    }
+
+    .step.on {
+      opacity: 1;
+    }
+
+    .step-n {
+      font-family: var(--mono);
+      font-size: .78rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .step h3 {
+      margin-top: 12px;
+      font-family: var(--display);
+      font-size: clamp(1.6rem, 3vw, 2.3rem);
+      font-weight: 700;
+      letter-spacing: -.03em;
+      line-height: 1.08;
+    }
+
+    .step p {
+      margin-top: 14px;
+      max-width: 42ch;
+      color: var(--muted);
+    }
+
+    .step code {
+      font-family: var(--mono);
+      font-size: .85em;
+      padding: 2px 6px;
+      border-radius: 6px;
+      background: #E9EEF6;
+      color: var(--accent);
+    }
+
+    /* trilho: mostra em que ponto do caminho o dado está */
+    .rail {
+      list-style: none;
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      font-family: var(--mono);
+      font-size: .7rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--dim);
+    }
+
+    .rail::before,
+    .rail::after {
+      content: "";
+      position: absolute;
+      top: 5px;
+      left: 6px;
+      width: 75%;
+      height: 2px;
+      background: var(--line-2);
+    }
+
+    .rail::after {
+      background: var(--accent);
+      transform: scaleX(var(--fill, 0));
+      transform-origin: left;
+      transition: transform .5s cubic-bezier(.2, .8, .2, 1);
+    }
+
+    .rail li {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 10px;
+      transition: color .3s;
+    }
+
+    .rail li::before {
+      content: "";
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 2px solid var(--line-2);
+      transition: background .3s, border-color .3s;
+    }
+
+    .rail li.on {
+      color: var(--accent);
+    }
+
+    .rail li.on::before {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .scenes {
+      position: relative;
+      flex: 1;
+    }
+
+    .scene {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      opacity: 0;
+      transform: translateY(18px) scale(.97);
+      transition: opacity .45s, transform .6s cubic-bezier(.2, .8, .2, 1);
+      pointer-events: none;
+    }
+
+    .scene.on {
+      opacity: 1;
+      transform: none;
+    }
+
+    .scene-in {
+      transform: scale(var(--scene-scale, 1));
+    }
+
+    /* cartão do pet */
+    .card {
+      position: relative;
+      width: 250px;
+      aspect-ratio: 1.586;
+      border-radius: 16px;
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: linear-gradient(135deg, #58B8E8, #2D5D96 60%, #23497A);
+      color: #fff;
+      box-shadow: 0 24px 40px -18px rgba(20, 45, 80, .7), 0 1px 0 rgba(255, 255, 255, .35) inset;
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .card b {
+      font-family: var(--display);
+      font-size: 1.5rem;
+      letter-spacing: -.02em;
+      line-height: 1;
+    }
+
+    .card small {
+      display: block;
+      font-size: .78rem;
+      opacity: .8;
+      margin-top: 5px;
+    }
+
+    .card svg {
+      width: 28px;
+      height: 28px;
+      fill: #fff;
+      opacity: .9;
+    }
+
+    .card .uid {
+      font-family: var(--mono);
+      font-size: .72rem;
+      opacity: .8;
+    }
+
+    .scene .card {
+      width: 300px;
+      transform: rotate(-5deg);
+    }
+
+    /* leitor */
+    .reader {
+      width: min(320px, 100%);
+      border-radius: 22px;
+      padding: 18px 18px 22px;
+      background: linear-gradient(180deg, #22324A, #16223A);
+      border: 1px solid var(--line-2);
+      box-shadow: 0 1px 0 rgba(255, 255, 255, .06) inset, 0 30px 50px -25px rgba(10, 25, 50, .7);
+    }
+
+    .reader-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      font-family: var(--mono);
+      font-size: .72rem;
+      color: var(--dim);
+    }
+
+    .led {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #3A4A63;
+      transition: background .2s, box-shadow .2s;
+    }
+
+    .led.busy {
+      background: #58B8E8;
+      box-shadow: 0 0 12px 2px rgba(88, 184, 232, .7);
+    }
+
+    .led.go {
+      background: var(--ok);
+      box-shadow: 0 0 12px 2px rgba(34, 197, 94, .7);
+    }
+
+    .lcd {
+      border-radius: 10px;
+      padding: 12px 14px;
+      min-height: 70px;
+      background: #0B1626;
+      border: 1px solid rgba(88, 184, 232, .18);
+      font-family: var(--mono);
+      font-size: .8rem;
+      color: #9ED8F5;
+      text-shadow: 0 0 8px rgba(88, 184, 232, .35);
+    }
+
+    .lcd .l2 {
+      color: rgba(158, 216, 245, .65);
+      margin-top: 3px;
+    }
+
+    .pad {
+      margin-top: 14px;
+      height: 130px;
+      border-radius: 14px;
+      position: relative;
+      display: grid;
+      place-items: center;
+      background: #101B2D;
+      border: 1px dashed rgba(255, 255, 255, .12);
+      transition: border-color .25s, background .25s;
+    }
+
+    .pad.hover {
+      border-color: #58B8E8;
+      background: rgba(88, 184, 232, .08);
+    }
+
+    .pad .ring {
+      position: absolute;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255, 255, 255, .13);
+    }
+
+    .pad .ring:nth-child(2) {
+      width: 84px;
+      height: 84px;
+    }
+
+    .pad .ring:nth-child(3) {
+      width: 112px;
+      height: 112px;
+      opacity: .6;
+    }
+
+    .pad.reading .ring {
+      border-color: #58B8E8;
+      animation: ping 1s ease-out;
+    }
+
+    .scene.on .pad .ring {
+      border-color: #58B8E8;
+      animation: ping 1.6s ease-out infinite;
+    }
+
+    @keyframes ping {
+      from {
+        transform: scale(.7);
+        opacity: 1;
+      }
+
+      to {
+        transform: scale(1.15);
+        opacity: 0;
+      }
+    }
+
+    .pad small {
+      position: relative;
+      font-family: var(--mono);
+      font-size: .72rem;
+      color: var(--dim);
+    }
+
+    /* terminal da API */
+    .term {
+      width: min(380px, 100%);
+      border-radius: 18px;
+      overflow: hidden;
+      background: #0F1826;
+      border: 1px solid var(--line-2);
+      box-shadow: 0 30px 50px -25px rgba(10, 25, 50, .7);
+      font-family: var(--mono);
+      font-size: .8rem;
+      line-height: 1.7;
+    }
+
+    .term-bar {
+      padding: 10px 16px;
+      font-size: .7rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--dim);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .term pre {
+      padding: 16px;
+      font: inherit;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .term .k {
+      color: #58B8E8;
+    }
+
+    .term .c {
+      color: var(--dim);
+    }
+
+    .term-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 14px 16px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+    }
+
+    .term-row b {
+      font-weight: 500;
+      color: var(--ok);
+    }
+
+    /* celular com o app do tutor */
+    .phone {
+      width: 236px;
+      border-radius: 36px;
+      padding: 8px;
+      background: #0F1826;
+      box-shadow: 0 30px 50px -25px rgba(10, 25, 50, .7);
+    }
+
+    .phone-screen {
+      border-radius: 29px;
+      overflow: hidden;
+      background: #F7F9FC;
+      min-height: 420px;
+    }
+
+    .phone-bar {
+      padding: 18px 16px 14px;
+      background: #2D5D96;
+      color: #fff;
+      font-family: var(--display);
+      font-weight: 700;
+      letter-spacing: -.01em;
+    }
+
+    .phone-body {
+      padding: 14px;
+    }
+
+    /* status do agendamento, como o tutor vê */
+    .appcard {
+      background: #fff;
+      border: 1px solid #E6EAF2;
+      border-radius: 18px;
+      padding: 16px;
+      color: #243B53;
+    }
+
+    .pet {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .pet-av {
+      width: 40px;
+      height: 40px;
+      flex: none;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: #E4EEF9;
+    }
+
+    .pet-av svg {
+      width: 22px;
+      height: 22px;
+      fill: #2D5D96;
+    }
+
+    .pet b {
+      display: block;
+      line-height: 1.2;
+    }
+
+    .pet small {
+      font-size: .8rem;
+      color: #6B7280;
+    }
+
+    .track {
+      list-style: none;
+      margin-top: 16px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .track li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 12px;
+      border-radius: 10px;
+      font-size: .88rem;
+      font-weight: 500;
+      color: #94A0B2;
+      border: 1px solid #E6EAF2;
+      transition: all .35s;
+    }
+
+    .track li::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .track li.past {
+      color: #2D5D96;
+    }
+
+    .track li.on {
+      color: #fff;
+      background: #2D5D96;
+      border-color: #2D5D96;
+    }
+
+    .track li.done {
+      color: #fff;
+      background: #16A34A;
+      border-color: #16A34A;
+    }
+
+    .app-note {
+      margin-top: 12px;
+      font-size: .8rem;
+      color: #6B7280;
+      min-height: 1.4em;
+    }
+
+    /* bancada de teste */
+    .demo {
+      margin-top: clamp(40px, 6vw, 80px);
+      padding: clamp(24px, 4vw, 48px);
+      border-radius: 28px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+    }
+
+    .demo h3 {
+      font-family: var(--display);
+      font-size: clamp(1.6rem, 3vw, 2.3rem);
+      font-weight: 700;
+      letter-spacing: -.03em;
+      line-height: 1.08;
+    }
+
+    .demo-head p {
+      margin-top: 10px;
+      color: var(--muted);
+    }
+
+    .demo-grid {
+      margin-top: 32px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(24px, 4vw, 56px);
+      align-items: center;
+    }
+
+    .bench {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 22px;
+      padding: 28px 20px;
+      border-radius: 22px;
+      background: #EDF2F9;
+    }
+
+    .bench .card {
+      cursor: grab;
+      touch-action: none;
+      user-select: none;
+      z-index: 5;
+    }
+
+    .bench .card:active {
+      cursor: grabbing;
+    }
+
+    .demo-side .label {
+      font-family: var(--mono);
+      font-size: .72rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--dim);
+      margin-bottom: 12px;
+    }
+
+    .tap {
+      margin-top: 18px;
+      background: none;
+      border: 0;
+      color: var(--accent);
+      font-size: .9rem;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    /* ================= CONTATO ================= */
+    .contact .eyebrow {
+      justify-content: center;
+    }
+
+    .contact .eyebrow::after {
+      content: "";
+      width: 28px;
+      height: 1px;
+      background: currentColor;
+    }
+
+    .contact {
+      text-align: center;
+    }
+
+    .contact h2 {
+      font-family: var(--display);
+      font-size: clamp(2.2rem, 5.6vw, 4.4rem);
+      font-weight: 700;
+      line-height: 1.04;
+      letter-spacing: -.022em;
+      max-width: 16ch;
+      margin: 0 auto;
+    }
+
+    .contact .lead {
+      color: var(--muted);
+      max-width: 46ch;
+      margin: 20px auto 0;
+    }
+
+    .mail {
+      display: inline-block;
+      margin-top: 44px;
+      font-family: var(--display);
+      font-size: clamp(1.3rem, 4vw, 2.6rem);
+      font-weight: 600;
+      letter-spacing: -.03em;
+      color: var(--accent);
+      background: linear-gradient(90deg, var(--accent), var(--accent)) left bottom / 0% 2px no-repeat;
+      padding-bottom: 6px;
+      transition: background-size .45s cubic-bezier(.2, .8, .2, 1);
+      word-break: break-all;
+    }
+
+    .mail:hover {
+      background-size: 100% 2px;
+    }
+
+    .contact .actions {
+      justify-content: center;
+    }
+
+    .toast {
+      color: var(--ok);
+      font-size: .9rem;
+      min-height: 1.6em;
+      margin-top: 14px;
+    }
+
+    .socials {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .socials a {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      color: var(--muted);
+      transition: color .2s, transform .2s, border-color .2s;
+    }
+
+    .socials a:hover {
+      color: var(--accent);
+      border-color: var(--line-2);
+      transform: translateY(-3px);
+    }
+
+    .socials svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    footer {
+      padding: 32px 0 40px;
+      text-align: center;
+      color: var(--dim);
+      font-size: .85rem;
+      border-top: 1px solid var(--line);
+    }
+
+    /* ================= REVEAL ================= */
+    .rv {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity .8s cubic-bezier(.2, .7, .2, 1), transform .8s cubic-bezier(.2, .7, .2, 1);
+    }
+
+    .rv.in {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* ================= RESPONSIVO ================= */
+    @media (max-width: 900px) {
+      .hero-inner {
+        grid-template-columns: 1fr;
+      }
+
+      .idcard-wrap {
+        width: min(340px, 88%);
+        margin-top: 12px;
+      }
+
+      .t-story,
+      .t-now {
+        grid-column: span 6;
+      }
+
+      /* o palco gruda no topo e os passos rolam por baixo */
+      .path {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+
+      .path-stage {
+        --scene-scale: .54;
+        grid-column: 1;
+        grid-row: 1;
+        z-index: 3;
+        top: 70px;
+        height: 380px;
+        padding: 18px;
+        border-radius: 22px;
+        box-shadow: 0 20px 30px -20px rgba(45, 93, 150, .5);
+      }
+
+      .path-steps {
+        grid-column: 1;
+        grid-row: 2;
+      }
+
+      .step {
+        min-height: 52vh;
+        align-items: flex-start;
+        padding-top: 36px;
+      }
+
+      .demo-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .nav a {
+        padding: 8px 12px;
+        font-size: .85rem;
+      }
+
+      .nav a.hide-sm {
+        display: none;
+      }
+
+      .hero {
+        padding-top: 110px;
+      }
+
+      .tile {
+        padding: 22px;
+      }
+
+      .layers li {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      .rail {
+        font-size: .62rem;
+      }
+
+      .bench .card {
+        width: 220px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+
+      .rv {
+        opacity: 1;
+        transform: none;
+      }
+
+      .statement .lw {
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav class="nav" id="nav" aria-label="Principal">
+    <span class="pill" id="pill"></span>
+    <a href="#inicio" class="hide-sm">Início</a>
+    <a href="#sobre">Sobre</a>
+    <a href="#mobipet">MobiPet</a>
+    <a href="#contato" class="nav-cta">Contato</a>
+  </nav>
+
+  <!-- ================= INTRODUÇÃO ================= -->
+  <header class="hero" id="inicio">
+    <div class="hero-grid"></div>
+    <div class="hero-glow"></div>
+
+    <div class="wrap hero-inner">
+      <div class="hero-copy">
+        <span class="badge hi"><span class="dot"></span>Disponível para estágio</span>
+        <h1 id="headline" aria-label="Olá, eu sou o Arthur. Desenvolvedor Full Stack">
+          <span data-words>Olá, eu sou o Arthur.</span><br />
+          <span class="soft" data-words>Desenvolvedor Full Stack</span>
+        </h1>
+        <p class="lead hi">
+          Desenvolvedor <b>Full Stack</b> em busca da primeira oportunidade na área de tecnologia.
+          Atualmente, curso <b>Técnico em Desenvolvimento de Sistemas</b> no <b>SENAI</b> e desenvolvo o
+          <b>Mobipet</b>, uma solução para petshops que busca facilitar o agendamento, a organização dos
+          processos e o acompanhamento dos pets em tempo real. Gosto de transformar ideias em sistemas
+          funcionais, com foco em tecnologia que resolve problemas reais e melhora a experiência das pessoas.
+        </p>
+        <div class="actions hi">
+          <a href="#mobipet" class="btn btn-primary">Ver o MobiPet
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M3 8h10M9 4l4 4-4 4" />
+            </svg>
+          </a>
+          <a href="#sobre" class="btn">Saber mais sobre mim</a>
+        </div>
+      </div>
+
+      <div class="idcard-wrap hi" aria-hidden="true">
+        <div class="idcard">
+          <div class="idcard-top">
+            <span>Portfólio</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M6 9a4.5 4.5 0 0 1 0 6M10 6a9 9 0 0 1 0 12M14 3a14 14 0 0 1 0 18" />
+            </svg>
+          </div>
+          <div>
+            <b>Arthur Providelo</b>
+            <small>Desenvolvedor Full Stack</small>
+          </div>
+          <div class="idcard-foot"><span>Flutter · Laravel · ESP32</span><span>SENAI</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scroll-hint" aria-hidden="true"><i></i></div>
+  </header>
+
+  <main>
+    <!-- ================= SOBRE ================= -->
+    <section class="sec" id="sobre">
+      <div class="wrap">
+        <p class="eyebrow rv">Sobre mim</p>
+        <h2 class="statement" id="statement">Aprendo construindo coisas que funcionam de verdade. Gosto de
+          entender o caminho inteiro do dado, <span class="hl">do sensor até a tela de quem usa.</span></h2>
+
+        <div class="bento">
+          <article class="tile t-story rv">
+            <h3>Como eu trabalho</h3>
+            <p>Comecei pelo mobile com <b>Flutter</b> e fui descendo a pilha: aprendi a montar <b>APIs em Laravel</b>,
+              modelar banco em <b>MySQL</b> e, no TCC, a programar um <b>ESP32</b> para ler cartões RFID.</p>
+            <p>Conhecer cada camada me ajuda a escrever código que conversa bem com o resto do sistema.</p>
+          </article>
+
+          <aside class="tile t-now rv">
+            <h3>Agora</h3>
+            <dl>
+              <div>
+                <dt>Curso</dt>
+                <dd>ADS no SENAI</dd>
+              </div>
+              <div>
+                <dt>Procuro</dt>
+                <dd>Estágio em mobile ou back-end</dd>
+              </div>
+              <div>
+                <dt>Construindo</dt>
+                <dd>MobiPet, meu TCC</dd>
+              </div>
+            </dl>
+          </aside>
+
+          <article class="tile t-stack rv">
+            <h3>Ferramentas que uso, por camada</h3>
+            <ul class="layers">
+              <li><span class="layer">Tela</span>
+                <div class="chips"><span class="chip">Flutter</span><span class="chip">Dart</span></div>
+              </li>
+              <li><span class="layer">API e banco</span>
+                <div class="chips"><span class="chip">Laravel</span><span class="chip">PHP</span><span
+                    class="chip">MySQL</span><span class="chip">APIs REST</span></div>
+              </li>
+              <li><span class="layer">Sensor</span>
+                <div class="chips"><span class="chip">ESP32</span><span class="chip">RFID RC522</span></div>
+              </li>
+              <li><span class="layer">Versionamento</span>
+                <div class="chips"><span class="chip">Git e GitHub</span></div>
+              </li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= MOBIPET ================= -->
+    <section class="panel" id="mobipet">
+      <div class="wrap">
+        <div class="panel-head">
+          <p class="eyebrow rv">Meu projeto principal</p>
+          <h2 class="rv">Conheça o <em>MobiPet</em>.</h2>
+          <p class="lead rv">Um sistema de petshop em que o cartão do pet atualiza o atendimento sozinho. O funcionário
+            aproxima o cartão do leitor e o tutor acompanha tudo pelo app.</p>
+          <div class="actions rv">
+            <a class="btn btn-primary" data-link="mobipetRepo" target="_blank" rel="noopener">Ver o código
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <path d="M3 8h10M9 4l4 4-4 4" />
+              </svg>
+            </a>
+            <a class="btn" data-link="mobipetDemo" target="_blank" rel="noopener">Assistir ao vídeo</a>
+          </div>
+        </div>
+
+        <!-- o caminho de um toque -->
+        <div class="path" id="path">
+          <div class="path-stage" aria-hidden="true">
+            <ol class="rail" id="rail">
+              <li class="on">Cartão</li>
+              <li>Leitor</li>
+              <li>API</li>
+              <li>App</li>
+            </ol>
+            <div class="scenes">
+              <div class="scene on">
+                <div class="scene-in">
+                  <div class="card">
+                    <div class="card-top">
+                      <div><b>Thor</b><small>Banho e tosa, 14h</small></div>
+                      <svg viewBox="0 0 64 64">
+                        <ellipse cx="18" cy="20" rx="6" ry="8" />
+                        <ellipse cx="32" cy="14" rx="6" ry="8" />
+                        <ellipse cx="46" cy="20" rx="6" ry="8" />
+                        <ellipse cx="11" cy="34" rx="5" ry="7" />
+                        <path d="M32 28c-9 0-17 10-17 18 0 6 5 8 9 7 3-1 5-2 8-2s5 1 8 2c4 1 9-1 9-7 0-8-8-18-17-18z" />
+                      </svg>
+                    </div>
+                    <span class="uid">pet_id 33</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="scene">
+                <div class="scene-in device">
+                  <div class="reader">
+                    <div class="reader-head"><span>ESP32 + RC522</span><span class="led busy"></span></div>
+                    <div class="lcd">
+                      <div>Lendo cartão...</div>
+                      <div class="l2">pet_id 33</div>
+                    </div>
+                    <div class="pad"><span class="ring"></span><span class="ring"></span><span
+                        class="ring"></span><small>leitor</small></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="scene">
+                <div class="scene-in device">
+                  <div class="term">
+                    <div class="term-bar">ESP32 → API Laravel</div>
+                    <pre><span class="k">POST</span> /api/agendamentos/avancar-rfid
+
+{ <span class="k">"pet_id"</span>: 33 }
+
+<span class="c">// a API acha o agendamento de hoje
+// e avança para a próxima etapa</span></pre>
+                    <div class="term-row"><span>Pendente</span><span>→</span><b>Em atendimento</b></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="scene">
+                <div class="scene-in">
+                  <div class="phone">
+                    <div class="phone-screen">
+                      <div class="phone-bar">MobiPet</div>
+                      <div class="phone-body">
+                        <div class="appcard">
+                          <div class="pet">
+                            <span class="pet-av"><svg viewBox="0 0 64 64">
+                                <ellipse cx="18" cy="20" rx="6" ry="8" />
+                                <ellipse cx="32" cy="14" rx="6" ry="8" />
+                                <ellipse cx="46" cy="20" rx="6" ry="8" />
+                                <ellipse cx="11" cy="34" rx="5" ry="7" />
+                                <path
+                                  d="M32 28c-9 0-17 10-17 18 0 6 5 8 9 7 3-1 5-2 8-2s5 1 8 2c4 1 9-1 9-7 0-8-8-18-17-18z" />
+                              </svg></span>
+                            <div><b>Thor</b><small>Banho e tosa, 14h</small></div>
+                          </div>
+                          <ol class="track">
+                            <li class="past">Pendente</li>
+                            <li class="on">Em atendimento</li>
+                            <li>Concluído</li>
+                          </ol>
+                          <p class="app-note">Atualizado agora</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="path-steps">
+            <article class="step on">
+              <div class="step-body">
+                <p class="step-n">Passo 1 de 4 · Cartão</p>
+                <h3>Cada pet tem um cartão.</h3>
+                <p>No cadastro, o identificador do pet é gravado em um cartão RFID. A partir daí, o cartão
+                  representa o pet dentro do petshop.</p>
+              </div>
+            </article>
+            <article class="step">
+              <div class="step-body">
+                <p class="step-n">Passo 2 de 4 · Leitor</p>
+                <h3>O funcionário aproxima do leitor.</h3>
+                <p>Um <b>ESP32</b> com módulo RC522 lê o cartão e descobre qual pet está ali. Ninguém precisa
+                  abrir o sistema nem digitar nada.</p>
+              </div>
+            </article>
+            <article class="step">
+              <div class="step-body">
+                <p class="step-n">Passo 3 de 4 · API</p>
+                <h3>A API avança o agendamento.</h3>
+                <p>O leitor envia o <code>pet_id</code> para a API em <b>Laravel</b>. Ela encontra o agendamento
+                  do dia e passa para a próxima etapa, gravando tudo no <b>MySQL</b>.</p>
+              </div>
+            </article>
+            <article class="step">
+              <div class="step-body">
+                <p class="step-n">Passo 4 de 4 · App</p>
+                <h3>O tutor vê na hora.</h3>
+                <p>No app em <b>Flutter</b>, o tutor acompanha em que etapa o pet está, sem precisar ligar
+                  para o petshop.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <!-- bancada de teste -->
+        <div class="demo rv" aria-label="Demonstração interativa do leitor RFID">
+          <div class="demo-head">
+            <h3>Agora teste você.</h3>
+            <p>Arraste o cartão do Thor até o leitor e veja o app do tutor mudar.</p>
+          </div>
+          <div class="demo-grid">
+            <div class="bench device">
+              <div class="reader">
+                <div class="reader-head"><span>ESP32 + RC522</span><span class="led" id="led"></span></div>
+                <div class="lcd" role="status" aria-live="polite">
+                  <div id="lcd1">Aproxime o cartão</div>
+                  <div class="l2" id="lcd2">Agendamento de hoje: Pendente</div>
+                </div>
+                <div class="pad" id="pad"><span class="ring"></span><span class="ring"></span><span
+                    class="ring"></span><small>leitor</small></div>
+              </div>
+
+              <div class="card" id="card" aria-hidden="true">
+                <div class="card-top">
+                  <div><b>Thor</b><small>Banho e tosa, 14h</small></div>
+                  <svg viewBox="0 0 64 64">
+                    <ellipse cx="18" cy="20" rx="6" ry="8" />
+                    <ellipse cx="32" cy="14" rx="6" ry="8" />
+                    <ellipse cx="46" cy="20" rx="6" ry="8" />
+                    <ellipse cx="11" cy="34" rx="5" ry="7" />
+                    <path d="M32 28c-9 0-17 10-17 18 0 6 5 8 9 7 3-1 5-2 8-2s5 1 8 2c4 1 9-1 9-7 0-8-8-18-17-18z" />
+                  </svg>
+                </div>
+                <span class="uid">pet_id 33</span>
+              </div>
+            </div>
+
+            <div class="demo-side">
+              <p class="label">No app do tutor</p>
+              <div class="appcard">
+                <div class="pet">
+                  <span class="pet-av"><svg viewBox="0 0 64 64">
+                      <ellipse cx="18" cy="20" rx="6" ry="8" />
+                      <ellipse cx="32" cy="14" rx="6" ry="8" />
+                      <ellipse cx="46" cy="20" rx="6" ry="8" />
+                      <ellipse cx="11" cy="34" rx="5" ry="7" />
+                      <path d="M32 28c-9 0-17 10-17 18 0 6 5 8 9 7 3-1 5-2 8-2s5 1 8 2c4 1 9-1 9-7 0-8-8-18-17-18z" />
+                    </svg></span>
+                  <div><b>Thor</b><small>Banho e tosa, 14h</small></div>
+                </div>
+                <ol class="track" id="track">
+                  <li class="on">Pendente</li>
+                  <li>Em atendimento</li>
+                  <li>Concluído</li>
+                </ol>
+                <p class="app-note" id="appNote" aria-live="polite"></p>
+              </div>
+              <button class="tap" id="tapBtn">Aproximar pelo teclado</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CONTATO ================= -->
+    <section class="sec contact" id="contato">
+      <div class="wrap">
+        <p class="eyebrow rv">Contato</p>
+        <h2 class="rv">Tem uma vaga de estágio? Vamos conversar.</h2>
+        <p class="lead rv">Posso mostrar o MobiPet funcionando numa chamada rápida.</p>
+        <a class="mail rv" id="mail" data-link="emailHref"></a>
+        <div class="actions rv">
+          <button class="btn btn-primary" id="copyBtn">Copiar e-mail</button>
+          <a class="btn" data-link="cv" download>Baixar currículo</a>
+        </div>
+        <p class="toast" id="toast" aria-live="polite"></p>
+        <div class="socials rv">
+          <a data-link="github" target="_blank" rel="noopener" aria-label="GitHub"><svg viewBox="0 0 24 24"
+              fill="currentColor">
+              <path
+                d="M12 .5a11.5 11.5 0 0 0-3.6 22.4c.6.1.8-.3.8-.6v-2.2c-3.2.7-3.9-1.4-3.9-1.4-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.2 1.2a11 11 0 0 1 5.8 0c2.2-1.5 3.2-1.2 3.2-1.2.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.2c0 .3.2.7.8.6A11.5 11.5 0 0 0 12 .5z" />
+            </svg></a>
+          <a data-link="linkedin" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24"
+              fill="currentColor">
+              <path
+                d="M20.4 20.5h-3.6v-5.6c0-1.3 0-3-1.8-3s-2.1 1.4-2.1 2.9v5.7H9.3V9h3.4v1.6h.1c.5-.9 1.6-1.8 3.4-1.8 3.6 0 4.3 2.4 4.3 5.5v6.2zM5.3 7.4a2.1 2.1 0 1 1 0-4.2 2.1 2.1 0 0 1 0 4.2zM7.1 20.5H3.5V9h3.6v11.5zM22.2 0H1.8C.8 0 0 .8 0 1.7v20.6c0 .9.8 1.7 1.8 1.7h20.4c1 0 1.8-.8 1.8-1.7V1.7C24 .8 23.2 0 22.2 0z" />
+            </svg></a>
+          <a data-link="whatsapp" target="_blank" rel="noopener" aria-label="WhatsApp"><svg viewBox="0 0 24 24"
+              fill="currentColor">
+              <path
+                d="M17.5 14.4c-.3-.1-1.8-.9-2-1s-.5-.1-.7.1-.8 1-.9 1.2-.3.2-.6.1a8 8 0 0 1-2.4-1.5 9 9 0 0 1-1.6-2c-.2-.3 0-.5.1-.6l.4-.5.3-.5v-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6a1.1 1.1 0 0 0-.8.4 3.4 3.4 0 0 0-1 2.5 5.9 5.9 0 0 0 1.2 3.1 13.5 13.5 0 0 0 5.2 4.6c3.2 1.2 3.2.8 3.8.8a3.2 3.2 0 0 0 2.1-1.5 2.6 2.6 0 0 0 .2-1.5c-.1-.1-.3-.2-.6-.3zM12 21.8a9.9 9.9 0 0 1-5-1.4l-.4-.2-3.7 1 1-3.6-.2-.4A9.8 9.8 0 1 1 12 21.8zM20.5 3.5A11.8 11.8 0 0 0 1.9 17.7L.2 24l6.4-1.7A11.8 11.8 0 0 0 20.5 3.5z" />
+            </svg></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">Dev Arthur Providelo <span id="year"></span>.</div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+  <script>
+    /* =========================================================
+       CONFIG: edite só esta parte
+       ========================================================= */
+    const CONFIG = {
+      email: "arthurprovidelo10@gmail.com",
+      linkedin: "https://www.linkedin.com/in/arthur-providelo",
+      github: "https://github.com/ArthurProvidelo",
+      whatsapp: "https://wa.me/5519997565421",                                   // ex: https://wa.me/5519999999999 (vazio = some)
+      cv: "curriculo-arthur.pdf",                     // PDF na mesma pasta do index.html
+      mobipetRepo: "https://github.com/ArthurProvidelo/MOBIPET_TCC_2026",
+      mobipetDemo: "",                                // vídeo do leitor (vazio = botão some)
+    };
+
+    /* ---------- links ---------- */
+    CONFIG.emailHref = "mailto:" + CONFIG.email + "?subject=" + encodeURIComponent("Vaga de estágio");
+    document.querySelectorAll("[data-link]").forEach(el => {
+      const v = CONFIG[el.dataset.link];
+      if (v) el.href = v; else el.remove();
+    });
+    const mailEl = document.getElementById("mail");
+    if (mailEl) mailEl.textContent = CONFIG.email;
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    document.getElementById("copyBtn").addEventListener("click", async () => {
+      const t = document.getElementById("toast");
+      try { await navigator.clipboard.writeText(CONFIG.email); t.textContent = "E-mail copiado."; }
+      catch { t.textContent = CONFIG.email; }
+      setTimeout(() => (t.textContent = ""), 3000);
+    });
+
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const hasGsap = typeof gsap !== "undefined" && !reduce;
+    const clamp = v => Math.max(0, Math.min(1, v));
+
+    /* ---------- rolagem suave ---------- */
+    let lenis = null;
+    if (!reduce && typeof Lenis !== "undefined") {
+      lenis = new Lenis({ lerp: 0.1 });
+      (function raf(t) { lenis.raf(t); requestAnimationFrame(raf); })(0);
+    }
+    document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener("click", e => {
+      const id = a.getAttribute("href"); if (id.length < 2) return;
+      e.preventDefault();
+      lenis ? lenis.scrollTo(id, { offset: -20 }) : document.querySelector(id).scrollIntoView();
+    }));
+
+    /* ---------- entrada do hero ---------- */
+    document.querySelectorAll("[data-words]").forEach(el => {
+      el.setAttribute("aria-hidden", "true");
+      el.innerHTML = el.textContent.split(" ").map(w => `<span class="w">${w} </span>`).join("");
+    });
+    if (hasGsap) {
+      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+      tl.fromTo(".hero .badge", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: .6 })
+        .fromTo("#headline .w", { opacity: 0, y: 24, filter: "blur(10px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: .8, stagger: .06 }, "-=.3")
+        .fromTo(".hero .lead, .hero .actions", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: .8, stagger: .1 }, "-=.5")
+        .fromTo(".idcard-wrap", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1.1, clearProps: "transform" }, "-=1.1");
+    }
+
+    /* ---------- revelar ao rolar ---------- */
+    const io = new IntersectionObserver(es => es.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+    }), { threshold: .15 });
+    document.querySelectorAll(".rv").forEach((el, i) => { el.style.transitionDelay = (i % 3) * 80 + "ms"; io.observe(el); });
+
+    /* ---------- brilho e inclinação do cartão seguem o mouse ---------- */
+    const hero = document.querySelector(".hero");
+    hero.addEventListener("pointermove", e => {
+      const r = hero.getBoundingClientRect();
+      hero.style.setProperty("--mx", e.clientX - r.left + "px");
+      hero.style.setProperty("--my", e.clientY - r.top + "px");
+      hero.style.setProperty("--tx", (((e.clientX - r.left) / r.width - .5) * 16).toFixed(2));
+      hero.style.setProperty("--ty", (((e.clientY - r.top) / r.height - .5) * -12).toFixed(2));
+    });
+    document.querySelectorAll(".tile").forEach(t => t.addEventListener("pointermove", e => {
+      const r = t.getBoundingClientRect();
+      t.style.setProperty("--x", e.clientX - r.left + "px");
+      t.style.setProperty("--y", e.clientY - r.top + "px");
+    }));
+
+    /* ---------- frase do "sobre": prepara as palavras ---------- */
+    const statement = document.getElementById("statement");
+    (function split(node) {
+      [...node.childNodes].forEach(n => {
+        if (n.nodeType === 3) {
+          const frag = document.createDocumentFragment();
+          n.textContent.split(/(\s+)/).forEach(part => {
+            if (!part.trim()) { if (part) frag.append(" "); return; }
+            const s = document.createElement("span"); s.className = "lw"; s.textContent = part; frag.append(s);
+          });
+          n.replaceWith(frag);
+        } else split(n);
+      });
+    })(statement);
+    const litWords = [...statement.querySelectorAll(".lw")];
+
+    /* ---------- o caminho de um toque ---------- */
+    const pathSteps = [...document.querySelectorAll("#path .step")];
+    const scenes = [...document.querySelectorAll("#path .scene")];
+    const rail = document.getElementById("rail"), railNodes = [...rail.children];
+    const narrow = matchMedia("(max-width: 900px)");
+    let activeStep = 0;
+    function setStep(n) {
+      if (n === activeStep) return; activeStep = n;
+      scenes.forEach((s, i) => s.classList.toggle("on", i === n));
+      pathSteps.forEach((s, i) => s.classList.toggle("on", i === n));
+      railNodes.forEach((li, i) => li.classList.toggle("on", i <= n));
+      rail.style.setProperty("--fill", n / (railNodes.length - 1));
+    }
+
+    /* ---------- tudo que depende da posição da rolagem ---------- */
+    function onScroll() {
+      const vh = innerHeight;
+
+      hero.style.setProperty("--hp", clamp(scrollY / (hero.offsetHeight * .8)).toFixed(3));
+
+      if (!reduce) {
+        const r = statement.getBoundingClientRect();
+        const p = clamp((vh * .85 - r.top) / (r.height + vh * .35));
+        const n = litWords.length;
+        litWords.forEach((w, i) => { w.style.opacity = (.16 + .84 * clamp(p * (n + 3) - i)).toFixed(2); });
+      }
+
+      const line = vh * (narrow.matches ? .85 : .62);
+      let n = 0;
+      pathSteps.forEach((s, i) => { if (s.firstElementChild.getBoundingClientRect().top < line) n = i; });
+      setStep(n);
+    }
+    let ticking = false;
+    addEventListener("scroll", () => {
+      if (ticking) return; ticking = true;
+      requestAnimationFrame(() => { onScroll(); ticking = false; });
+    }, { passive: true });
+    addEventListener("resize", onScroll);
+    onScroll();
+
+    /* ---------- nav: pílula que desliza ---------- */
+    const nav = document.getElementById("nav"), pill = document.getElementById("pill");
+    const navLinks = [...nav.querySelectorAll("a:not(.nav-cta)")];
+    function movePill(a) {
+      if (!a || getComputedStyle(a).display === "none") { pill.style.opacity = 0; return; }
+      pill.style.left = a.offsetLeft + "px"; pill.style.width = a.offsetWidth + "px"; pill.style.opacity = 1;
+    }
+    let current = null;
+    navLinks.forEach(a => {
+      a.addEventListener("pointerenter", () => movePill(a));
+    });
+    nav.addEventListener("pointerleave", () => movePill(current));
+    const secIO = new IntersectionObserver(es => es.forEach(e => {
+      if (e.isIntersecting) {
+        current = navLinks.find(a => a.getAttribute("href") === "#" + e.target.id) || null;
+        navLinks.forEach(a => a.classList.toggle("active", a === current));
+        movePill(current);
+      }
+    }), { rootMargin: "-45% 0px -50% 0px" });
+    ["inicio", "sobre", "mobipet", "contato"].forEach(id => secIO.observe(document.getElementById(id)));
+
+    /* =========================================================
+       DEMO RFID
+       ========================================================= */
+    const card = document.getElementById("card"), pad = document.getElementById("pad"), led = document.getElementById("led");
+    const lcd1 = document.getElementById("lcd1"), lcd2 = document.getElementById("lcd2");
+    const appNote = document.getElementById("appNote");
+    const steps = [...document.querySelectorAll("#track li")];
+    const STATES = ["Pendente", "Em atendimento", "Concluído"];
+    let state = 0, busy = false;
+
+    function paint() {
+      steps.forEach((li, i) => {
+        li.classList.toggle("past", i < state);
+        li.classList.toggle("on", i === state && state < 2);
+        li.classList.toggle("done", state === 2 && i === 2);
+      });
+    }
+    function tap() {
+      if (busy) return; busy = true;
+      pad.classList.remove("reading"); void pad.offsetWidth; pad.classList.add("reading");
+      led.className = "led busy"; lcd1.textContent = "Lendo cartão..."; lcd2.textContent = "pet_id 33";
+      setTimeout(() => {
+        const restart = state === 2;
+        state = restart ? 0 : state + 1;
+        led.className = "led " + (state === 2 ? "go" : "busy");
+        lcd1.textContent = restart ? "Novo agendamento" : "Thor: " + STATES[state];
+        lcd2.textContent = state === 0 ? "Aproxime o cartão para iniciar" : state === 1 ? "Status enviado para a API" : "Tutor avisado no app";
+        appNote.textContent = state === 0 ? "" : "Atualizado agora";
+        paint();
+        setTimeout(() => { if (state !== 2) led.className = "led"; pad.classList.remove("reading"); busy = false; }, 700);
+      }, 600);
+    }
+    document.getElementById("tapBtn").addEventListener("click", tap);
+
+    let drag = null;
+    const over = () => {
+      const a = card.getBoundingClientRect(), b = pad.getBoundingClientRect();
+      const cx = a.left + a.width / 2, cy = a.top + a.height / 2;
+      return cx > b.left && cx < b.right && cy > b.top && cy < b.bottom;
+    };
+    card.addEventListener("pointerdown", e => {
+      if (hasGsap) gsap.killTweensOf(card);
+      drag = { x: e.clientX, y: e.clientY }; card.setPointerCapture(e.pointerId);
+    });
+    card.addEventListener("pointermove", e => {
+      if (!drag) return;
+      const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+      card.style.transform = `translate(${dx}px, ${dy}px) rotate(${Math.max(-10, Math.min(10, dx / 15))}deg)`;
+      pad.classList.toggle("hover", over());
+    });
+    function release() {
+      if (!drag) return; drag = null;
+      const hit = over(); pad.classList.remove("hover");
+      if (hit) tap();
+      if (hasGsap) gsap.to(card, { x: 0, y: 0, rotate: 0, duration: hit ? .9 : .6, delay: hit ? .45 : 0, ease: "elastic.out(1,.55)", clearProps: "transform" });
+      else card.style.transform = "";
+    }
+    card.addEventListener("pointerup", release);
+    card.addEventListener("pointercancel", release);
+
+    /* dica: quando a bancada aparece, o cartão "ensaia" ir até o leitor */
+    if (hasGsap) {
+      const hintIO = new IntersectionObserver(es => es.forEach(e => {
+        if (e.isIntersecting) {
+          gsap.to(card, { y: -30, rotate: -3, duration: .45, ease: "power2.inOut", yoyo: true, repeat: 1, delay: .6 });
+          hintIO.disconnect();
+        }
+      }), { threshold: .6 });
+      hintIO.observe(document.querySelector(".bench"));
+    }
+  </script>
+</body>
+
+</html>
